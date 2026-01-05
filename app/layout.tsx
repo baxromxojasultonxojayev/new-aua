@@ -1,0 +1,71 @@
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { ThemeProvider } from "@/components/theme-provider";
+import { I18nProvider } from "@/lib/i18n-context";
+import "./globals.css";
+
+// Using Inter font for professional, clean typography
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
+export const metadata: Metadata = {
+  title: "Axis Visuals — Production Company",
+  description:
+    "Axis Visuals — продакшн-компания, создающая коммерческие и продуктовые видео мирового уровня.",
+  keywords: [
+    "production",
+    "video production",
+    "commercial",
+    "CGI",
+    "3D",
+    "photo",
+    "advertising",
+  ],
+  generator: "aua",
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon.png",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ru" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <I18nProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </I18nProvider>
+        <Analytics />
+      </body>
+    </html>
+  );
+}
