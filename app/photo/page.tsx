@@ -1,21 +1,87 @@
-"use client" // added "use client" to fix SSR i18n error
+"use client";
 
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { useI18n } from "@/lib/i18n-context" // imported i18n hook
+import React from "react";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n-context";
 
-const photos = [
-  { id: 1, title: "Product Shot 01", category: "Product", src: "/luxury-watch-macro.jpg" },
-  { id: 2, title: "Fashion Editorial", category: "Fashion", src: "/fashion-model-studio.jpg" },
-  { id: 3, title: "Commercial Lifestyle", category: "Commercial", src: "/lifestyle-office-meeting.jpg" },
-  { id: 4, title: "Macro Texture", category: "Product", src: "/macro-perfume-bottle.jpg" },
-  { id: 5, title: "Automotive Detail", category: "Commercial", src: "/car-interior-luxury.jpg" },
-  { id: 6, title: "Beauty Close-up", category: "Fashion", src: "/cosmetics-product-photography.jpg" },
-]
+type PhotoItem = {
+  id: number;
+  title: string;
+  category: string;
+  src: string;
+};
 
-export default function PhotoPage() {
-  const { dict } = useI18n() // use localized dictionary
+const photos: PhotoItem[] = [
+  {
+    id: 1,
+    title: "Central Asian Drift Show",
+    category: "Photo",
+    src: "/media/photos/central asian drift show.jpg",
+  },
+  {
+    id: 2,
+    title: "Deepal",
+    category: "Photo",
+    src: "/media/photos/deepal.jpg",
+  },
+  {
+    id: 3,
+    title: "Milaf",
+    category: "Photo",
+    src: "/media/photos/milaf.jpg",
+  },
+  {
+    id: 4,
+    title: "Rino",
+    category: "Photo",
+    src: "/media/photos/rino.jpg",
+  },
+  {
+    id: 5,
+    title: "Space Fusion",
+    category: "Photo",
+    src: "/media/photos/space fusion.png",
+  },
+  {
+    id: 6,
+    title: "Toyota",
+    category: "Photo",
+    src: "/media/photos/toyota.jpg",
+  },
+  {
+    id: 7,
+    title: "Your Service",
+    category: "Photo",
+    src: "/media/photos/Your Service.jpg",
+  },
+];
+
+const PhotoCard = ({ photo }: { photo: PhotoItem }) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-muted aspect-[3/4]">
+      <img
+        src={photo.src || "/placeholder.svg"}
+        alt={photo.title}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        loading="lazy"
+      />
+
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-8">
+        <span className="text-[10px] uppercase tracking-widest text-white/60 mb-1">
+          {photo.category}
+        </span>
+        <h3 className="text-xl font-bold text-white uppercase">
+          {photo.title}
+        </h3>
+      </div>
+    </div>
+  );
+};
+
+const PhotoPage = () => {
+  const { dict } = useI18n();
 
   return (
     <main className="relative min-h-screen">
@@ -27,7 +93,9 @@ export default function PhotoPage() {
             <h1 className="text-6xl md:text-9xl font-bold uppercase tracking-tighter mb-8 leading-[0.8]">
               {dict.photo.title}
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">{dict.photo.desc}</p>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              {dict.photo.desc}
+            </p>
           </div>
         </div>
       </section>
@@ -35,28 +103,23 @@ export default function PhotoPage() {
       <section className="px-6 pb-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {photos.map((photo) => (
-            <div key={photo.id} className="group relative overflow-hidden rounded-2xl bg-muted aspect-[3/4]">
-              <img
-                src={photo.src || "/placeholder.svg"}
-                alt={photo.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-8">
-                <span className="text-[10px] uppercase tracking-widest text-white/60 mb-1">{photo.category}</span>
-                <h3 className="text-xl font-bold text-white uppercase">{photo.title}</h3>
-              </div>
-            </div>
+            <PhotoCard key={photo.id} photo={photo} />
           ))}
         </div>
 
-        <div className="mt-20 text-center">
-          <Button size="lg" className="rounded-full px-12 py-7 font-bold uppercase text-xs tracking-widest">
+        {/* <div className="mt-20 text-center">
+          <Button
+            size="lg"
+            className="rounded-full px-12 py-7 font-bold uppercase text-xs tracking-widest"
+          >
             {dict.photo.cta}
           </Button>
-        </div>
+        </div> */}
       </section>
 
       <Footer />
     </main>
-  )
-}
+  );
+};
+
+export default PhotoPage;

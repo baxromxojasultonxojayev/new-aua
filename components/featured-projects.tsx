@@ -1,4 +1,5 @@
 "use client";
+
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
@@ -6,46 +7,40 @@ import { useI18n } from "@/lib/i18n-context";
 
 const projects = [
   {
-    id: "porsche",
-    title: "Porsche",
+    id: "3d",
+    title: "3D",
+    category: "3D",
+    image: "/media/3D/porsche.png",
+  },
+  {
+    id: "commercial",
+    title: "Commercial",
     category: "Commercial",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-sports-car-driving-away-on-a-highway-at-sunset-34531-large.mp4",
+    image: "/media/Commercial/mening biznesim.png",
   },
   {
-    id: "yandex",
-    title: "Yandex",
-    category: "Product Advertising",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-woman-working-on-a-laptop-at-home-42517-large.mp4",
+    id: "corporate",
+    title: "Corporate",
+    category: "Corporate",
+    image: "/media/Corporate/Asaka Bank 2.png",
   },
   {
-    id: "toyota",
-    title: "Toyota",
-    category: "Commercial",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-front-of-a-white-car-driving-on-a-road-34533-large.mp4",
+    id: "music-clip",
+    title: "Music Clip",
+    category: "Music Clip",
+    image: "/media/Music Clip/asalya unlucky.jpg",
   },
   {
-    id: "technogym",
-    title: "Technogym",
-    category: "Product Production",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-man-running-on-a-treadmill-in-a-gym-43037-large.mp4",
+    id: "photo",
+    title: "Photo",
+    category: "Photo",
+    image: "/media/photos/central asian drift show.jpg",
   },
   {
-    id: "space-gaming",
-    title: "Space Gaming",
-    category: "3D / CGI",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-gaming-setup-with-a-computer-and-neon-lights-42519-large.mp4",
-  },
-  {
-    id: "deepal",
-    title: "Deepal",
-    category: "Commercial",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-car-driving-through-a-mountain-pass-4309-large.mp4",
+    id: "product",
+    title: "Product",
+    category: "Product",
+    image: "/media/Product/aije.jpg",
   },
 ];
 
@@ -64,6 +59,7 @@ export function FeaturedProjects() {
               {dict.projects.desc}
             </p>
           </div>
+
           <Link
             href="/works"
             className="hidden md:flex items-center gap-2 group text-sm font-medium uppercase tracking-widest"
@@ -82,15 +78,14 @@ export function FeaturedProjects() {
               viewport={{ once: true }}
               className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted"
             >
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
+              {/* ✅ video o‘rniga rasm */}
+              <img
+                src={project.image}
+                alt={project.title}
                 className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-              >
-                <source src={project.video} type="video/mp4" />
-              </video>
+                loading="lazy"
+              />
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
               <div className="absolute inset-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
@@ -100,7 +95,7 @@ export function FeaturedProjects() {
                   {project.title}
                 </h3>
                 <Link
-                  href={`/works/${project.id}`}
+                  href={`/works`}
                   className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <ArrowUpRight className="w-5 h-5" />
