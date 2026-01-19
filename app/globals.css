@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
- 
+
 :root {
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.12 0 0);
@@ -24,8 +24,8 @@
   --input: oklch(0.88 0 0);
   --ring: oklch(0.4 0 0);
   --radius: 0.5rem;
-  
-  /* <CHANGE> Added accent color for Axis Visuals brand */
+
+  /* <CHANGE> Added accent color for AUA Creative Agency brand */
   --accent-brand: oklch(0.55 0.15 260);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -62,7 +62,7 @@
   --border: oklch(0.2 0 0);
   --input: oklch(0.2 0 0);
   --ring: oklch(0.5 0 0);
-  
+
   --accent-brand: oklch(0.65 0.2 270);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -124,12 +124,12 @@
   body {
     @apply bg-background text-foreground selection:bg-primary/10 selection:text-foreground;
   }
-  
+
   /* <CHANGE> Smooth transitions for theme switching */
   html {
     @apply scroll-smooth;
   }
-  
+
   html.dark,
   html.light {
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -142,15 +142,15 @@
     width: 10px;
     height: 10px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-muted;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/30 rounded-lg;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }

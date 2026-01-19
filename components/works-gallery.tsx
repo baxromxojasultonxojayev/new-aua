@@ -3,25 +3,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, X } from "lucide-react";
-import dynamic from "next/dynamic";
 import { useI18n } from "@/lib/i18n-context";
 
-// ✅ ReactPlayer uchun minimal props type (TS muammosiz)
-type PlayerProps = {
-  url?: string;
-  width?: string | number;
-  height?: string | number;
-  controls?: boolean;
-  playing?: boolean;
-};
-
-// ✅ SSRda yiqilmasin (player faqat clientda)
-const ReactPlayer = dynamic(() => import("react-player"), {
-  ssr: false,
-}) as unknown as React.ComponentType<PlayerProps>;
-
 type TabKey =
-  | "All"
   | "3D"
   | "Commercial"
   | "Corporate"
@@ -32,15 +16,89 @@ type TabKey =
 type WorkItem = {
   id: string;
   title: string;
-  tab: Exclude<TabKey, "All">;
+  tab: TabKey;
   image: string;
   href?: string;
   youtube?: string;
 };
 
-const folderToTab = (folder: string): Exclude<TabKey, "All"> => {
+// ---------- helpers ----------
+const normalizeId = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/\.(png|jpg|jpeg|webp|gif)$/i, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "");
+
+const folderToTab = (folder: string): TabKey => {
   if (folder === "photos") return "Photo";
-  return folder as Exclude<TabKey, "All">;
+  return folder as TabKey;
+};
+
+// YouTube link mapping
+const YT: Record<string, string> = {
+  "asaka-bank-2": "https://youtu.be/r5M8un1iGIE",
+  "asaka-bank": "https://youtu.be/EVZk3Eda740?si=1N2qvHd4ZS_3JKt-",
+  brb: "https://youtu.be/AiWMzYX4UF0?si=s4_siUgNtKgZVUzt",
+  lixiang: "https://youtu.be/Uvj6pd4GRJM?si=jm3s0mHd5vIHu5V3",
+  deepal: "https://www.youtube.com/watch?v=8xjXWba_qlE",
+  "mercury-travel": "https://www.youtube.com/watch?v=8xjXWba_qlE",
+  "milaf-cola": "https://youtu.be/LZt4LlgyQRY?si=UvWx_2BT7ENTIpba",
+  toyota: "https://youtu.be/-sbXXczGJcM?si=ERxMvg6Kn0YKbLCh",
+  uzclaas: "https://youtu.be/afY3OwkikOk?si=6vufBrpXWYtOAJ3I",
+
+  "mening-biznesim": "https://youtu.be/UPax2OGL4HM?si=v0yB7dfzSeacOdKV",
+  "yandex-go": "https://youtu.be/53X5WiHZTpk?si=Y-ZCUKYFYULyYBtE",
+  "yoursevice-thumbnail": "https://youtu.be/1Fw9SLvoARs?si=ycr7K-yvIW2SDTh_",
+  "your-service": "https://youtu.be/1Fw9SLvoARs?si=ycr7K-yvIW2SDTh_",
+
+  "centril-ladies": "https://youtu.be/fdz_JMZzfX8?si=NogZBpfI-lIPdmyj",
+  dahua: "https://youtu.be/urHaY3nv3eo?si=bYQWcFbiyxtKUapb",
+  aije: "https://youtu.be/CvQS2ohabfA?si=j1AkjWAuSPrvQxxH",
+  "yandex-market": "https://youtu.be/VbSeGvoHwqM?si=eLw6tvXGAtg2pLB1",
+  "shinam-podcast": "https://www.youtube.com/watch?v=PnQTTxf7QFs",
+  porsche: "https://youtu.be/Wdy4rjjOFak?si=WbYj4gFeJZo8B7Sl",
+
+  "asalya-unlucky": "https://youtu.be/kAqZpG71mZg?si=hrMymaOpW4KvWMZW",
+  "asiat-кашель": "https://youtu.be/r-TORAhYud8",
+  "samar-hiyla": "https://youtu.be/Lto6c_vB9l0?si=HizssybXoMZpYRZV",
+  "uyxoqi-baho-khabi": "https://youtu.be/BoDDlZQpqVM?si=8ODMMiRGbMVk9Aao",
+  "raayxonaa-chempion": "https://youtu.be/lKrWoj9VR5w?si=1II7IP3XXSAXlzjf",
+  "konsta-x-munisa-rizayeva-2":
+    "https://youtu.be/c7DwV2HMmNw?si=S7SxirjUKiKS71uD",
+};
+
+// ✅ YouTube ID ni topib beradi (watch, youtu.be, shorts, embed)
+const getYoutubeId = (raw?: string) => {
+  if (!raw) return "";
+  try {
+    const u = new URL(raw);
+
+    // youtu.be/<id>
+    if (u.hostname.includes("youtu.be")) {
+      const id = u.pathname.replace("/", "");
+      return id;
+    }
+
+    // youtube.com/watch?v=<id>
+    const v = u.searchParams.get("v");
+    if (v) return v;
+
+    // youtube.com/shorts/<id>
+    if (u.pathname.includes("/shorts/")) {
+      return u.pathname.split("/shorts/")[1]?.split("/")[0] || "";
+    }
+
+    // youtube.com/embed/<id>
+    if (u.pathname.includes("/embed/")) {
+      return u.pathname.split("/embed/")[1]?.split("/")[0] || "";
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
 };
 
 const makeItems = (folder: string, files: string[]): WorkItem[] => {
@@ -50,17 +108,21 @@ const makeItems = (folder: string, files: string[]): WorkItem[] => {
     const title = file.replace(/\.(png|jpg|jpeg|webp|gif)$/i, "");
     const id = `${folder}-${file}`.toLowerCase().replace(/\s+/g, "-");
 
+    const key = normalizeId(file);
+    const youtube = YT[key];
+
     return {
       id,
       title,
       tab,
       image: `/media/${folder}/${file}`,
       href: `/works/${id}`,
-      youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // keyin siz link berasiz
+      youtube,
     };
   });
 };
 
+// ---------- DATA ----------
 const worksData: WorkItem[] = [
   ...makeItems("3D", ["porsche.png"]),
 
@@ -116,6 +178,7 @@ const worksData: WorkItem[] = [
   ]),
 ];
 
+// ---------- MODAL (IFRAME PLAYER) ----------
 const Modal = ({
   open,
   title,
@@ -134,10 +197,8 @@ const Modal = ({
       if (e.key === "Escape") onClose();
     };
 
-    // scroll lock (modal ochilganda body qimirlamasin)
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     window.addEventListener("keydown", onKey);
 
     return () => {
@@ -148,19 +209,27 @@ const Modal = ({
 
   if (!open) return null;
 
+  const id = getYoutubeId(url);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+  // ✅ YouTube embed (nocookie tavsiya)
+  const embedSrc = id
+    ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&origin=${encodeURIComponent(
+        origin
+      )}`
+    : "";
+
   return (
     <div className="fixed inset-0 z-[9999]">
-      {/* overlay */}
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* content */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div
           className="w-full max-w-4xl rounded-2xl bg-black border border-white/10 overflow-hidden shadow-2xl"
-          onClick={(e) => e.stopPropagation()} // ✅ ichini bossangiz yopilib ketmasin
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
             <div className="text-white font-semibold truncate pr-3">
@@ -178,17 +247,19 @@ const Modal = ({
           </div>
 
           <div className="relative w-full aspect-video bg-black">
-            {url ? (
-              <ReactPlayer
-                url={url}
-                width="100%"
-                height="100%"
-                controls
-                playing
+            {id ? (
+              <iframe
+                key={id} // ✅ boshqa video bosilganda yangilansin
+                className="absolute inset-0 w-full h-full"
+                src={embedSrc}
+                title={title || "YouTube video"}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/70">
-                Youtube link yo‘q
+                Youtube link xato yoki yo‘q
               </div>
             )}
           </div>
@@ -198,42 +269,30 @@ const Modal = ({
   );
 };
 
+// ---------- COMPONENT ----------
 export const WorksGallery = () => {
   const { dict } = useI18n();
 
   const tabs: TabKey[] = useMemo(
-    () => [
-      "All",
-      "Commercial",
-      "Product",
-      "3D",
-      "Corporate",
-      "Music Clip",
-      "Photo",
-    ],
+    () => ["Commercial", "Product", "3D", "Corporate", "Music Clip", "Photo"],
     []
   );
 
   const tabLabel = (tab: TabKey) => {
-    const c = dict.works.categories;
+    const c: any = dict.works.categories;
 
-    if (tab === "All") return c.all;
-    if (tab === "Commercial") return c.commercial;
-    if (tab === "Product") return c.product;
-    if (tab === "Photo") return c.photo;
-
-    // sizda dictda shular bor deb turibsiz:
-    if (tab === "Corporate") return c.corporate;
-    if (tab === "Music Clip") return c.musicClip;
-    if (tab === "3D") return c.d3;
-
+    if (tab === "Commercial") return c.commercial || "Commercial";
+    if (tab === "Product") return c.product || "Product";
+    if (tab === "Photo") return c.photo || "Photo";
+    if (tab === "Corporate") return c.corporate || "Corporate";
+    if (tab === "Music Clip") return c.musicClip || "Music Clip";
+    if (tab === "3D") return c.d3 || "3D";
     return tab;
   };
 
-  const [activeTab, setActiveTab] = useState<TabKey>("All");
+  const [activeTab, setActiveTab] = useState<TabKey>("Commercial");
 
   const filtered = useMemo(() => {
-    if (activeTab === "All") return worksData;
     return worksData.filter((x) => x.tab === activeTab);
   }, [activeTab]);
 
@@ -300,7 +359,7 @@ export const WorksGallery = () => {
 
                   <div className="absolute inset-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-all duration-500 opacity-0 group-hover:opacity-100">
                     <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                      {tabLabel(work.tab as TabKey)}
+                      {tabLabel(work.tab)}
                     </span>
 
                     <h3 className="text-3xl font-bold text-white uppercase tracking-tight mb-4">

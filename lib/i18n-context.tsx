@@ -83,9 +83,9 @@ export interface Dictionary {
 const dictionaries: Record<Language, Dictionary> = {
   ru: {
     hero: {
-      title: "Axis Visuals — продакшн мирового уровня",
+      title: "AUA Creative Agency — продакшн мирового уровня",
       subtitle:
-        "Мы создаем коммерческие и продуктовые видео, которые рассказывают истории, вдохновляют и приносят результат.",
+        "Мы создаем коммерческие, корпоративные и продуктовые видео, которые рассказывают истории, вдохновляют и приносят результат.",
       ctaPrimary: "Смотреть шоурил",
       ctaSecondary: "Наши работы",
       scroll: "Листайте вниз",
@@ -107,7 +107,7 @@ const dictionaries: Record<Language, Dictionary> = {
     works: {
       title: "Работы",
       subtitle:
-        "Портфолио проектов, созданных командой Axis Visuals для ведущих брендов.",
+        "Портфолио проектов, созданных командой AUA Creative Agency для ведущих брендов.",
       categories: {
         all: "Все",
         commercial: "Commercial",
@@ -151,7 +151,7 @@ const dictionaries: Record<Language, Dictionary> = {
       desc: "Мы предлагаем полный спектр продакшн-услуг, от идеи до финального монтажа.",
       heroTitle: "Превращаем идеи в визуальную реальность",
       heroDesc:
-        "Axis Visuals предоставляет полный цикл видео-производства от идеи до финального монтажа.",
+        "AUA Creative Agency предоставляет полный цикл видео-производства от идеи до финального монтажа.",
       heroScroll: "Исследуйте наши услуги",
       viewAll: "Все услуги",
       ctaTitle: "Готовы обсудить ваш проект?",
@@ -159,8 +159,8 @@ const dictionaries: Record<Language, Dictionary> = {
         "Расскажите нам о ваших задачах, и мы предложим оптимальный формат в течение 24 часов.",
       ctaButton: "Запросить смету",
       commercial: {
-        title: "Commercial Production",
-        desc: "Рекламные и имиджевые ролики для брендов, банков и корпораций.",
+        title: "Video production",
+        desc: "Рекламные, корпоративные и продуктовые ролики для любой сферы деятельности.",
         features: [
           "ТВ и онлайн реклама",
           "Корпоративные кампании",
@@ -170,7 +170,7 @@ const dictionaries: Record<Language, Dictionary> = {
       },
       product: {
         title: "Product Videos",
-        desc: "Демонстрационные видео и продуктовые съёмки мирового уровня.",
+        desc: "Рекламная, предметная, fashion и имиджевая фотосъёмка с глубокой ретушью.",
         features: [
           "Макросъёмка продукции",
           "Студийные постановки",
@@ -224,7 +224,7 @@ const dictionaries: Record<Language, Dictionary> = {
 
   en: {
     hero: {
-      title: "Axis Visuals — World-Class Production",
+      title: "AUA Creative Agency — World-Class Production",
       subtitle:
         "We create commercial and product videos that tell stories, inspire, and drive results.",
       ctaPrimary: "Watch Showreel",
@@ -248,7 +248,7 @@ const dictionaries: Record<Language, Dictionary> = {
     works: {
       title: "Works",
       subtitle:
-        "A portfolio of projects created by the Axis Visuals team for leading brands.",
+        "A portfolio of projects created by the AUA Creative Agency team for leading brands.",
       categories: {
         all: "All",
         commercial: "Commercial",
@@ -292,7 +292,7 @@ const dictionaries: Record<Language, Dictionary> = {
       desc: "We offer a full spectrum of production services from concept to final cut.",
       heroTitle: "Turning Ideas into Visual Reality",
       heroDesc:
-        "Axis Visuals provides full-cycle video production from concept to final cut.",
+        "AUA Creative Agency provides full-cycle video production from concept to final cut.",
       heroScroll: "Explore our services",
       viewAll: "All Services",
       ctaTitle: "Ready to discuss your project?",
@@ -365,7 +365,7 @@ const dictionaries: Record<Language, Dictionary> = {
 
   uz: {
     hero: {
-      title: "Axis Visuals — Jahon darajasidagi prodakshn",
+      title: "AUA Creative Agency — Jahon darajasidagi prodakshn",
       subtitle:
         "Biz hikoya qiluvchi, ilhomlantiruvchi va natija beruvchi tijoriy va mahsulot videolarini yaratamiz.",
       ctaPrimary: "Shourilni ko'rish",
@@ -389,7 +389,7 @@ const dictionaries: Record<Language, Dictionary> = {
     works: {
       title: "Ishlar",
       subtitle:
-        "Axis Visuals jamoasi tomonidan yetakchi brendlar uchun yaratilgan loyihalar portfeli.",
+        "AUA Creative Agency jamoasi tomonidan yetakchi brendlar uchun yaratilgan loyihalar portfeli.",
       categories: {
         all: "Barchasi",
         commercial: "Commercial",
@@ -433,7 +433,7 @@ const dictionaries: Record<Language, Dictionary> = {
       desc: "Biz g'oyadan yakuniy montajgacha to'liq prodakshn xizmatini taklif etadi.",
       heroTitle: "G'oyalarni vizual haqiqatga aylantiramiz",
       heroDesc:
-        "Axis Visuals g'oyadan yakuniy montajgacha bo'lgan to'liq video prodakshn xizmatini taqdim etadi.",
+        "AUA Creative Agency g'oyadan yakuniy montajgacha bo'lgan to'liq video prodakshn xizmatini taqdim etadi.",
       heroScroll: "Xizmatlarimizni o'rganing",
       viewAll: "Barcha xizmatlar",
       ctaTitle: "Loyihangizni muhokama qilishga tayyormisiz?",

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 
 const clients = [
   "Porsche",
@@ -20,7 +20,7 @@ const clients = [
   "Biznes Rivojlantirish Banki",
   "UzCLAAS",
   "Aije",
-]
+];
 
 export default function ClientsPage() {
   return (
@@ -30,10 +30,13 @@ export default function ClientsPage() {
       <section className="pt-40 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mb-24">
-            <h1 className="text-6xl md:text-9xl font-bold uppercase tracking-tighter mb-8 leading-[0.8]">Клиенты</h1>
+            <h1 className="text-6xl md:text-9xl font-bold uppercase tracking-tighter mb-8 leading-[0.8]">
+              Клиенты
+            </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Axis Visuals — продакшн-партнёр ведущих брендов и компаний региона. Мы создаем визуальный контент, который
-              усиливает позиции на рынке.
+              AUA Creative Agency — продакшн-партнёр ведущих брендов и компаний
+              региона. Мы создаем визуальный контент, который усиливает позиции
+              на рынке.
             </p>
           </div>
 
@@ -43,7 +46,9 @@ export default function ClientsPage() {
                 key={i}
                 className="aspect-video bg-muted/30 rounded-2xl flex items-center justify-center p-8 border border-border/50 grayscale hover:grayscale-0 transition-all hover:bg-muted/50"
               >
-                <span className="text-sm font-bold opacity-40 uppercase tracking-[0.2em] text-center">{client}</span>
+                <span className="text-sm font-bold opacity-40 uppercase tracking-[0.2em] text-center">
+                  {client}
+                </span>
               </div>
             ))}
           </div>
@@ -53,7 +58,8 @@ export default function ClientsPage() {
               Станьте частью нашей истории
             </h2>
             <p className="text-primary-foreground/80 max-w-xl mx-auto mb-10 text-lg">
-              Мы всегда открыты для новых вызовов и масштабных проектов. Давайте создадим что-то легендарное вместе.
+              Мы всегда открыты для новых вызовов и масштабных проектов. Давайте
+              создадим что-то легендарное вместе.
             </p>
             <button className="bg-primary-foreground text-primary px-12 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform">
               Начать проект
@@ -64,5 +70,5 @@ export default function ClientsPage() {
 
       <Footer />
     </main>
-  )
+  );
 }

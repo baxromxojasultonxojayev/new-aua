@@ -14,9 +14,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Axis Visuals — Production Company",
+  title: "AUA Creative Agency — Production Company",
   description:
-    "Axis Visuals — продакшн-компания, создающая коммерческие и продуктовые видео мирового уровня.",
+    "AUA Creative Agency — продакшн-компания, создающая коммерческие и продуктовые видео мирового уровня.",
   keywords: [
     "production",
     "video production",

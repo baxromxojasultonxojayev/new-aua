@@ -5,42 +5,49 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n-context";
 
-const projects = [
+type Project = {
+  id: string;
+  title: string;
+  categories: string[]; // bir nechta category
+  image: string; // public dan
+};
+
+const projects: Project[] = [
   {
-    id: "3d",
-    title: "3D",
-    category: "3D",
-    image: "/media/3D/porsche.png",
-  },
-  {
-    id: "commercial",
-    title: "Commercial",
-    category: "Commercial",
-    image: "/media/Commercial/mening biznesim.png",
-  },
-  {
-    id: "corporate",
-    title: "Corporate",
-    category: "Corporate",
+    id: "asaka-bank",
+    title: "Asaka Bank",
+    categories: ["Corporate", "3D / CGI"],
     image: "/media/Corporate/Asaka Bank 2.png",
   },
   {
-    id: "music-clip",
-    title: "Music Clip",
-    category: "Music Clip",
-    image: "/media/Music Clip/asalya unlucky.jpg",
+    id: "porsche-x-technogym",
+    title: "Porsche X Technogym",
+    categories: ["Product", "Corporate", "3D / CGI"],
+    image: "/media/3D/porsche.png",
   },
   {
-    id: "photo",
-    title: "Photo",
-    category: "Photo",
-    image: "/media/photos/central asian drift show.jpg",
+    id: "brb",
+    title: "Biznesni Rivojlantirish Banki",
+    categories: ["Corporate"],
+    image: "/media/Corporate/brb.png",
   },
   {
-    id: "product",
-    title: "Product",
-    category: "Product",
-    image: "/media/Product/aije.jpg",
+    id: "toyota",
+    title: "Toyota",
+    categories: ["Corporate", "Product"],
+    image: "/media/Corporate/toyota.jpg",
+  },
+  {
+    id: "milaf-cola",
+    title: "Milaf Cola",
+    categories: ["Corporate", "Product"],
+    image: "/media/Corporate/milaf cola.jpg",
+  },
+  {
+    id: "konsta-x-munisa",
+    title: "Konsta X Munisa Rizayeva — O‘ylamading",
+    categories: ["Music Clip"],
+    image: "/media/Music Clip/Konsta X Munisa Rizayeva (2).png",
   },
 ];
 
@@ -78,7 +85,6 @@ export function FeaturedProjects() {
               viewport={{ once: true }}
               className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted"
             >
-              {/* ✅ video o‘rniga rasm */}
               <img
                 src={project.image}
                 alt={project.title}
@@ -87,16 +93,28 @@ export function FeaturedProjects() {
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+
               <div className="absolute inset-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                  {project.category}
-                </span>
+                {/* categories (bir nechta) */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {project.categories.map((c) => (
+                    <span
+                      key={`${project.id}-${c}`}
+                      className="text-[10px] uppercase tracking-widest text-white/70"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+
                 <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-4">
                   {project.title}
                 </h3>
+
                 <Link
-                  href={`/works`}
+                  href="/works"
                   className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Open works"
                 >
                   <ArrowUpRight className="w-5 h-5" />
                 </Link>

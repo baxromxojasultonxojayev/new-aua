@@ -12,7 +12,7 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background/50 backdrop-blur-md border-b border-border/40">
       <div className="flex items-center gap-8">
         <Link href="/" className="text-xl font-bold tracking-tighter uppercase">
-          Axis Visuals<span className="text-primary/50">.</span>
+          AUA Creative Agency<span className="text-primary/50">.</span>
         </Link>
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
           <Link
@@ -33,9 +33,9 @@ export function Navbar() {
           >
             {dict.nav.photo}
           </Link>
-          <Link href="/cgi" className="hover:text-foreground transition-colors">
+          {/* <Link href="/cgi" className="hover:text-foreground transition-colors">
             {dict.nav.cgi}
-          </Link>
+          </Link> */}
           <Link
             href="/clients"
             className="hover:text-foreground transition-colors"

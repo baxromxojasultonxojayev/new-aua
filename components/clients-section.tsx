@@ -1,5 +1,5 @@
-"use client"
-import { motion } from "framer-motion"
+"use client";
+import { motion } from "framer-motion";
 
 const clients = [
   "Porsche",
@@ -14,15 +14,20 @@ const clients = [
   "Space Gaming",
   "Tashkent City Mall",
   "Biznes Rivojlantirish Banki",
-]
+];
 
 export function ClientsSection() {
   return (
     <section className="py-32 px-6 border-t border-border/50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold uppercase tracking-tighter mb-4">Наши клиенты</h2>
-          <p className="text-muted-foreground">Axis Visuals — продакшн-партнёр ведущих брендов и компаний региона.</p>
+          <h2 className="text-4xl font-bold uppercase tracking-tighter mb-4">
+            Наши клиенты
+          </h2>
+          <p className="text-muted-foreground">
+            AUA Creative Agency — продакшн-партнёр ведущих брендов и компаний
+            региона.
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
@@ -34,7 +39,9 @@ export function ClientsSection() {
               transition={{ delay: i * 0.05 }}
               className="aspect-video bg-muted/50 rounded-xl flex items-center justify-center p-6 grayscale hover:grayscale-0 transition-all border border-transparent hover:border-border"
             >
-              <span className="text-sm font-bold opacity-40 uppercase tracking-widest text-center">{client}</span>
+              <span className="text-sm font-bold opacity-40 uppercase tracking-widest text-center">
+                {client}
+              </span>
             </motion.div>
           ))}
         </div>
@@ -49,5 +56,5 @@ export function ClientsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
