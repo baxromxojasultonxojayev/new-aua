@@ -15,7 +15,7 @@ type TabKey =
 
 type WorkItem = {
   id: string;
-  title: string;
+  title: string; // ✅ endi ekranga chiqadigan title shu bo‘ladi
   tab: TabKey;
   image: string;
   href?: string;
@@ -31,12 +31,40 @@ const normalizeId = (s: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9\-]/g, "");
 
-const folderToTab = (folder: string): TabKey => {
-  if (folder === "photos") return "Photo";
-  return folder as TabKey;
+// ✅ file nomi -> kerakli ko‘rinishdagi title
+const TITLE: Record<string, string> = {
+  // Music Clip
+  "asalya-unlucky": "Asalya - “Unlucky”",
+  "asiat-кашель": "Asiat - “Кашель”",
+  "samar-hiyla": "Samar - “Hiyla”",
+  "konsta-x-munisa-rizayeva-2": "Munisa Rizayeva X Konsta - “Oylamading”",
+  "uyxoqi-baho-khabi": "Baho Khabi - “Чужой”",
+  "raayxonaa-chempion": "Raayxonaa - “Chempion”",
+
+  // Corporate / Commercial / Product / Photo / 3D
+  brb: "Biznesni Rivojlantirish Banki (BRB)",
+  "centril-ladies": "Centris",
+  dahua: "Dahua Technology",
+  deepal: "Deepal",
+  aije: "AIJE",
+  lixiang: "Lixiang",
+  porsche: "Porsche X Technogym",
+  "mening-biznesim": "Mening biznesim",
+  "milaf-cola": "Milaf cola",
+  toyota: "Toyota",
+  "mercury-travel": "Mercury Travel",
+  "your-service": "Your Service",
+  "yoursevice-thumbnail": "Your Service",
+  uzclaas: "UzCLAAS",
+  "yandex-go": "Yandex Go",
+  "yandex-market": "Yandex Market",
+  "shinam-podcast": "Shinam Podcast",
+
+  // photos only
+  rino: "Rino Jeans",
+  "space-fusion": "Space Fusion",
 };
 
-// YouTube link mapping
 const YT: Record<string, string> = {
   "asaka-bank-2": "https://youtu.be/r5M8un1iGIE",
   "asaka-bank": "https://youtu.be/EVZk3Eda740?si=1N2qvHd4ZS_3JKt-",
@@ -69,28 +97,28 @@ const YT: Record<string, string> = {
     "https://youtu.be/c7DwV2HMmNw?si=S7SxirjUKiKS71uD",
 };
 
-// ✅ YouTube ID ni topib beradi (watch, youtu.be, shorts, embed)
+const folderToTab = (folder: string): TabKey => {
+  if (folder === "photos") return "Photo";
+  return folder as TabKey;
+};
+
 const getYoutubeId = (raw?: string) => {
   if (!raw) return "";
   try {
     const u = new URL(raw);
 
-    // youtu.be/<id>
     if (u.hostname.includes("youtu.be")) {
       const id = u.pathname.replace("/", "");
       return id;
     }
 
-    // youtube.com/watch?v=<id>
     const v = u.searchParams.get("v");
     if (v) return v;
 
-    // youtube.com/shorts/<id>
     if (u.pathname.includes("/shorts/")) {
       return u.pathname.split("/shorts/")[1]?.split("/")[0] || "";
     }
 
-    // youtube.com/embed/<id>
     if (u.pathname.includes("/embed/")) {
       return u.pathname.split("/embed/")[1]?.split("/")[0] || "";
     }
@@ -105,15 +133,17 @@ const makeItems = (folder: string, files: string[]): WorkItem[] => {
   const tab = folderToTab(folder);
 
   return files.map((file) => {
-    const title = file.replace(/\.(png|jpg|jpeg|webp|gif)$/i, "");
-    const id = `${folder}-${file}`.toLowerCase().replace(/\s+/g, "-");
-
     const key = normalizeId(file);
+
+    const displayTitle =
+      TITLE[key] || file.replace(/\.(png|jpg|jpeg|webp|gif)$/i, "");
+
+    const id = `${folder}-${file}`.toLowerCase().replace(/\s+/g, "-");
     const youtube = YT[key];
 
     return {
       id,
-      title,
+      title: displayTitle,
       tab,
       image: `/media/${folder}/${file}`,
       href: `/works/${id}`,
@@ -178,7 +208,6 @@ const worksData: WorkItem[] = [
   ]),
 ];
 
-// ---------- MODAL (IFRAME PLAYER) ----------
 const Modal = ({
   open,
   title,
@@ -212,7 +241,6 @@ const Modal = ({
   const id = getYoutubeId(url);
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-  // ✅ YouTube embed (nocookie tavsiya)
   const embedSrc = id
     ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&origin=${encodeURIComponent(
         origin
@@ -249,7 +277,7 @@ const Modal = ({
           <div className="relative w-full aspect-video bg-black">
             {id ? (
               <iframe
-                key={id} // ✅ boshqa video bosilganda yangilansin
+                key={id}
                 className="absolute inset-0 w-full h-full"
                 src={embedSrc}
                 title={title || "YouTube video"}
@@ -362,6 +390,7 @@ export const WorksGallery = () => {
                       {tabLabel(work.tab)}
                     </span>
 
+                    {/* ✅ shu joyda endi siz bergan title chiqadi */}
                     <h3 className="text-3xl font-bold text-white uppercase tracking-tight mb-4">
                       {work.title}
                     </h3>
