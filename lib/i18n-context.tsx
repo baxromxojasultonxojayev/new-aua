@@ -169,7 +169,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Videos",
+        title: "Photo Production",
         desc: "Рекламная, предметная, fashion и имиджевая фотосъёмка с глубокой ретушью.",
         features: [
           "Макросъёмка продукции",
@@ -310,7 +310,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Videos",
+        title: "Photo Production",
         desc: "World-class demonstration videos and product shoots.",
         features: [
           "Macro Cinematography",
@@ -451,7 +451,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Videos",
+        title: "Photo Production",
         desc: "Jahon darajasidagi namoyish videolari va mahsulot suratga olish ishlari.",
         features: [
           "Makro-tasvirga olish",

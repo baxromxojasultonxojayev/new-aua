@@ -15,7 +15,7 @@ type TabKey =
 
 type WorkItem = {
   id: string;
-  title: string; // ✅ endi ekranga chiqadigan title shu bo‘ladi
+  title: string;
   tab: TabKey;
   image: string;
   href?: string;
@@ -23,17 +23,27 @@ type WorkItem = {
 };
 
 // ---------- helpers ----------
+
+// ✅ Unicode-safe normalize (Cyrillic ham qoladi: кашель ishlaydi)
 const normalizeId = (s: string) =>
   s
     .toLowerCase()
     .trim()
-    .replace(/\.(png|jpg|jpeg|webp|gif)$/i, "")
+    .replace(/\.(png|jpg|jpeg|webp|gif)$/iu, "")
     .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9\-]/g, "");
+    // faqat harf/son va "-" qoldiramiz (unicode)
+    .replace(/[^\p{L}\p{N}-]/gu, "");
 
-// ✅ file nomi -> kerakli ko‘rinishdagi title
+const folderToTab = (folder: string): TabKey => {
+  if (folder === "photos") return "Photo";
+  return folder as TabKey;
+};
+
+// ✅ bitta standart title list (hamma joyda SHU chiqadi)
 const TITLE: Record<string, string> = {
   // Music Clip
+  "asaka-bank-2": "Asaka Bank 2",
+  "asaka-bank": "Asaka Bank",
   "asalya-unlucky": "Asalya - “Unlucky”",
   "asiat-кашель": "Asiat - “Кашель”",
   "samar-hiyla": "Samar - “Hiyla”",
@@ -41,16 +51,18 @@ const TITLE: Record<string, string> = {
   "uyxoqi-baho-khabi": "Baho Khabi - “Чужой”",
   "raayxonaa-chempion": "Raayxonaa - “Chempion”",
 
-  // Corporate / Commercial / Product / Photo / 3D
+  // Corporate / Commercial / Product
   brb: "Biznesni Rivojlantirish Banki (BRB)",
   "centril-ladies": "Centris",
   dahua: "Dahua Technology",
   deepal: "Deepal",
+  // deepal: "Deepal",
   aije: "AIJE",
   lixiang: "Lixiang",
+  "lixian-thumbnail-2": "Lixiang", // file: "lixian thumbnail 2.png"
   porsche: "Porsche X Technogym",
   "mening-biznesim": "Mening biznesim",
-  "milaf-cola": "Milaf cola",
+  milaf: "Milaf cola",
   toyota: "Toyota",
   "mercury-travel": "Mercury Travel",
   "your-service": "Your Service",
@@ -60,11 +72,13 @@ const TITLE: Record<string, string> = {
   "yandex-market": "Yandex Market",
   "shinam-podcast": "Shinam Podcast",
 
-  // photos only
+  // Photos
+  "central-asian-drift-show": "Central Asian Drift Show",
   rino: "Rino Jeans",
   "space-fusion": "Space Fusion",
 };
 
+// YouTube link mapping
 const YT: Record<string, string> = {
   "asaka-bank-2": "https://youtu.be/r5M8un1iGIE",
   "asaka-bank": "https://youtu.be/EVZk3Eda740?si=1N2qvHd4ZS_3JKt-",
@@ -97,28 +111,29 @@ const YT: Record<string, string> = {
     "https://youtu.be/c7DwV2HMmNw?si=S7SxirjUKiKS71uD",
 };
 
-const folderToTab = (folder: string): TabKey => {
-  if (folder === "photos") return "Photo";
-  return folder as TabKey;
-};
-
+// ✅ YouTube ID ni topib beradi (watch, youtu.be, shorts, embed)
 const getYoutubeId = (raw?: string) => {
   if (!raw) return "";
   try {
     const u = new URL(raw);
 
+    // youtu.be/<id>
     if (u.hostname.includes("youtu.be")) {
-      const id = u.pathname.replace("/", "");
+      // pathname: /<id>
+      const id = u.pathname.split("/").filter(Boolean)[0] || "";
       return id;
     }
 
+    // youtube.com/watch?v=<id>
     const v = u.searchParams.get("v");
     if (v) return v;
 
+    // youtube.com/shorts/<id>
     if (u.pathname.includes("/shorts/")) {
       return u.pathname.split("/shorts/")[1]?.split("/")[0] || "";
     }
 
+    // youtube.com/embed/<id>
     if (u.pathname.includes("/embed/")) {
       return u.pathname.split("/embed/")[1]?.split("/")[0] || "";
     }
@@ -135,15 +150,15 @@ const makeItems = (folder: string, files: string[]): WorkItem[] => {
   return files.map((file) => {
     const key = normalizeId(file);
 
-    const displayTitle =
-      TITLE[key] || file.replace(/\.(png|jpg|jpeg|webp|gif)$/i, "");
+    // ✅ faqat shu ro‘yxatdagi nomlar chiqadi, topilmasa baribir file nomini emas, "—" chiqadi
+    const title = TITLE[key] || "—";
 
     const id = `${folder}-${file}`.toLowerCase().replace(/\s+/g, "-");
     const youtube = YT[key];
 
     return {
       id,
-      title: displayTitle,
+      title,
       tab,
       image: `/media/${folder}/${file}`,
       href: `/works/${id}`,
@@ -208,6 +223,7 @@ const worksData: WorkItem[] = [
   ]),
 ];
 
+// ---------- MODAL (IFRAME PLAYER) ----------
 const Modal = ({
   open,
   title,
@@ -287,7 +303,7 @@ const Modal = ({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/70">
-                Youtube link xato yoki yo‘q
+                Youtube link topilmadi yoki xato
               </div>
             )}
           </div>
@@ -328,6 +344,8 @@ export const WorksGallery = () => {
   const [activeWork, setActiveWork] = useState<WorkItem | null>(null);
 
   const openModal = (work: WorkItem) => {
+    // ✅ youtube bo‘lmasa modal ochmaymiz (bosilganda “bo‘sh” chiqib qolmasin)
+    if (!work.youtube) return;
     setActiveWork(work);
     setOpen(true);
   };
@@ -360,56 +378,75 @@ export const WorksGallery = () => {
 
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <AnimatePresence mode="popLayout">
-              {filtered.map((work) => (
-                <motion.div
-                  key={work.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.4 }}
-                  className="group relative aspect-video overflow-hidden rounded-3xl bg-muted cursor-pointer"
-                  onClick={() => openModal(work)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") openModal(work);
-                  }}
-                >
-                  <img
-                    src={work.image || "/placeholder.svg"}
-                    alt={work.title}
-                    className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-                    loading="lazy"
-                  />
+              {filtered.map((work) => {
+                // ✅ spaces/cyrillic bo‘lsa ham img ishlashi uchun encodeURI
+                const imgSrc = work.image
+                  ? encodeURI(work.image)
+                  : "/placeholder.svg";
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  <div className="absolute inset-0 p-8 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-all duration-500 opacity-0 group-hover:opacity-100">
-                    <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                      {tabLabel(work.tab)}
-                    </span>
-
-                    {/* ✅ shu joyda endi siz bergan title chiqadi */}
-                    <h3 className="text-3xl font-bold text-white uppercase tracking-tight mb-4">
-                      {work.title}
-                    </h3>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openModal(work);
+                return (
+                  <motion.div
+                    key={work.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
+                    className="group relative aspect-video overflow-hidden rounded-3xl bg-muted cursor-pointer"
+                    onClick={() => openModal(work)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") openModal(work);
+                    }}
+                  >
+                    <img
+                      src={imgSrc}
+                      alt={work.title}
+                      className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
+                      loading="lazy"
+                      onError={(e) => {
+                        // ✅ rasm topilmasa fallback
+                        (e.currentTarget as HTMLImageElement).src =
+                          "/placeholder.svg";
                       }}
-                      className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center"
-                      aria-label="Open video"
-                    >
-                      <ArrowUpRight className="w-6 h-6" />
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
+                    />
+
+                    {/* ✅ gradient doim ko‘rinsin (hover bo‘lmasa ham title chiqadi) */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-100 transition-opacity duration-500" />
+
+                    {/* ✅ title doim ko‘rinsin (hoverda kuchayadi) */}
+                    <div className="absolute inset-0 p-8 flex flex-col justify-end transition-all duration-500">
+                      <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
+                        {tabLabel(work.tab)}
+                      </span>
+
+                      <h3 className="text-3xl font-bold text-white uppercase tracking-tight mb-4">
+                        {work.title}
+                      </h3>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          openModal(work);
+                        }}
+                        className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center"
+                        aria-label="Open video"
+                        disabled={!work.youtube}
+                        title={!work.youtube ? "Video yo‘q" : "Open video"}
+                        style={{
+                          opacity: work.youtube ? 1 : 0.5,
+                          cursor: work.youtube ? "pointer" : "not-allowed",
+                        }}
+                      >
+                        <ArrowUpRight className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </motion.div>
         </div>

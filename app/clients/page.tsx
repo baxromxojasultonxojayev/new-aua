@@ -87,6 +87,7 @@ const sizeClass: Record<LogoSize, string> = {
   big: "w-[88%] h-[64%] md:w-[86%] md:h-[66%]",
 };
 
+// ✅ oq logo oq fonda yo‘qolib ketmasin (kontur/shadow)
 const whiteLogoStyle: React.CSSProperties = {
   filter:
     "drop-shadow(0 1px 0 rgba(0,0,0,0.55)) drop-shadow(0 -1px 0 rgba(0,0,0,0.55)) drop-shadow(1px 0 0 rgba(0,0,0,0.55)) drop-shadow(-1px 0 0 rgba(0,0,0,0.55))",
@@ -121,24 +122,31 @@ export default function ClientsPage() {
                   key={i}
                   className="
                     group aspect-video rounded-2xl
-                    bg-white
-                    border border-black/10
-                    shadow-[0_10px_30px_rgba(0,0,0,0.16)]
+                    border border-white/10
+                    bg-zinc-950/70
+                    shadow-[0_12px_40px_rgba(0,0,0,0.55)]
+                    ring-1 ring-white/5
+                    backdrop-blur-md
                     transition-all
-                    hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,0.22)]
+                    hover:-translate-y-1
+                    hover:bg-zinc-900/80
+                    hover:shadow-[0_20px_60px_rgba(0,0,0,0.65)]
                     flex items-center justify-center
                   "
                   title={client.name}
                 >
+                  {/* ✅ ichkarida yengil "panel" effekt */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+
                   <div
-                    className={`${sizeClass[s]} flex items-center justify-center`}
+                    className={`${sizeClass[s]} flex items-center justify-center relative`}
                   >
                     {src ? (
                       <img
-                        src={src}
+                        src={encodeURI(src)}
                         alt={client.name}
                         loading="lazy"
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain opacity-95 group-hover:opacity-100 transition-opacity"
                         style={{
                           ...(client.whiteOnWhite ? whiteLogoStyle : {}),
                           transform:
@@ -152,14 +160,14 @@ export default function ClientsPage() {
                           if (parent) {
                             const span = document.createElement("span");
                             span.className =
-                              "text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-center text-black/70";
+                              "text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-center text-white/75";
                             span.innerText = client.name;
                             parent.appendChild(span);
                           }
                         }}
                       />
                     ) : (
-                      <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-center text-black/70">
+                      <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-center text-white/75">
                         {client.name}
                       </span>
                     )}
