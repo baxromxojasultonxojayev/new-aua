@@ -51,22 +51,10 @@ export function Footer() {
                 <span className="shrink-0">{dict.footer.phoneLabel}</span>
                 <div className="flex flex-col leading-relaxed">
                   <Link
-                    href="tel:+998900690600"
+                    href="tel:+998900909960"
                     className="hover:text-primary transition-colors"
                   >
-                    +998 90 069 06 00
-                  </Link>
-                  <Link
-                    href="tel:+998935379705"
-                    className="hover:text-primary transition-colors"
-                  >
-                    +998 93 537 97 05
-                  </Link>
-                  <Link
-                    href="tel:+998974610709"
-                    className="hover:text-primary transition-colors"
-                  >
-                    +998 97 461 07 09
+                    +998 90 090 99 60
                   </Link>
                 </div>
               </li>
