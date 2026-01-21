@@ -70,7 +70,7 @@ const clients: ClientLogoItem[] = [
 
   {
     name: "UzCLAAS",
-    file: "UzCLAAS.svg",
+    file: "UzCLAAS.png",
     size: "normal",
     boost: 1.35,
     whiteOnWhite: true,

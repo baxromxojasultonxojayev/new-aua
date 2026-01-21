@@ -23,6 +23,7 @@ const clients: ClientLogoItem[] = [
   { name: "Toyota", file: "Toyota.png", size: "mark", boost: 1.25 },
   { name: "Yandex", file: "Yandex.png", size: "wide", boost: 1.35 },
   { name: "Technogym", file: "Technogym.png", size: "wide", boost: 1.4 },
+  { name: "UzCLASS", file: "UzCLASS.png", size: "wide", boost: 1.4 },
 
   { name: "Ucell", file: "Ucell.png", size: "normal", boost: 1.95 },
   { name: "Asaka Bank", file: "Asaka bank.png", size: "normal", boost: 1.9 },
