@@ -44,7 +44,7 @@ const TITLE: Record<string, string> = {
   "baho-khabi": "Baho Khabi - “Чужой”",
   "raayxonaa-chempion": "Raayxonaa - “Chempion”",
   brb: "Biznesni Rivojlantirish Banki (BRB)",
-  "centril-ladies": "Centris",
+  "centril-ladies": "Centris Ladies",
   dahua: "Dahua Technology",
   deepal: "Deepal",
   deepal1: "Deepal",
@@ -66,7 +66,7 @@ const TITLE: Record<string, string> = {
   "central-asian-drift-show": "Central Asian Drift Show",
   rino: "Rino Jeans",
   "space-fusion": "Space Fusion",
-  "asaka-bank-2": "Asaka Bank 2",
+  "asaka-bank-2": "Asaka Bank",
   "asaka-bank": "Asaka Bank",
 };
 
@@ -145,7 +145,7 @@ const makeItems = (folder: string, files: string[]): WorkItem[] => {
 };
 
 const worksData: WorkItem[] = [
-  ...makeItems("3D", ["porsche.png"]),
+  ...makeItems("3D", ["porsche.png", "asaka bank.png"]),
   ...makeItems("Commercial", [
     "mening biznesim.png",
     "yandex go.png",

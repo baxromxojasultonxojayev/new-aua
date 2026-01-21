@@ -79,6 +79,13 @@ export interface Dictionary {
     desc: string;
     ctaTitle: string;
   };
+  stats: {
+    items: {
+      projects: { label: string; brand: string };
+      retention: { label: string; brand: string };
+      awards: { label: string; brand: string };
+    };
+  };
   footer: {
     desc: string;
     studiosTitle: string;
@@ -178,7 +185,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Production",
+        title: "Product Videos",
         desc: "Демонстрационные видео и контент для продвижения продукта.",
         features: [
           "Макросъёмка продукции",
@@ -233,6 +240,16 @@ const dictionaries: Record<Language, Dictionary> = {
       title: "Наши клиенты",
       desc: "AUA Creative Agency — продакшн-партнёр ведущих брендов и компаний региона.",
       ctaTitle: "Мы превращаем идеи в визуальные истории.",
+    },
+    stats: {
+      items: {
+        projects: { label: "Проектов выполнено", brand: "Глобальный масштаб" },
+        retention: { label: "Удержание клиентов", brand: "Фокус на качестве" },
+        awards: {
+          label: "Профессиональных наград",
+          brand: "Креативное превосходство",
+        },
+      },
     },
     footer: {
       desc: "Помогаем брендам рассказывать свои истории через кинематографичный видеопродакшн.",
@@ -332,7 +349,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Production",
+        title: "Product Videos",
         desc: "World-class demonstration videos and product content.",
         features: [
           "Macro cinematography",
@@ -387,6 +404,16 @@ const dictionaries: Record<Language, Dictionary> = {
       title: "Our Clients",
       desc: "AUA Creative Agency is the production partner of leading brands and companies in the region.",
       ctaTitle: "We turn ideas into visual stories.",
+    },
+    stats: {
+      items: {
+        projects: { label: "Проектов выполнено", brand: "Глобальный масштаб" },
+        retention: { label: "Удержание клиентов", brand: "Фокус на качестве" },
+        awards: {
+          label: "Профессиональных наград",
+          brand: "Креативное превосходство",
+        },
+      },
     },
     footer: {
       desc: "Helping brands tell their stories through cinematic video experiences.",
@@ -486,7 +513,7 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Product Production",
+        title: "Product Videos",
         desc: "Mahsulotni targ'ib qilish uchun video va kontent.",
         features: [
           "Makro suratga olish",
@@ -542,6 +569,17 @@ const dictionaries: Record<Language, Dictionary> = {
       desc: "AUA Creative Agency — mintaqadagi yetakchi brend va kompaniyalar uchun prodakshn-hamkor.",
       ctaTitle: "Biz g'oyalarni vizual hikoyalarga aylantiramiz.",
     },
+    stats: {
+      items: {
+        projects: { label: "Bajarilgan loyihalar", brand: "Global miqyos" },
+        retention: {
+          label: "Mijozlarni saqlab qolish",
+          brand: "Sifatga urg'u",
+        },
+        awards: { label: "Sohaviy mukofotlar", brand: "Kreativ mukammallik" },
+      },
+    },
+
     footer: {
       desc: "Brendlarga hikoyalarini kinomatografik video orqali yetkazishga yordam beramiz.",
       studiosTitle: "Studiya",
