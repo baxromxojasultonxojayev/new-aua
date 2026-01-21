@@ -3,6 +3,7 @@
 import React from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { useI18n } from "@/lib/i18n-context";
 
 type LogoSize = "normal" | "wide" | "mark" | "big";
 
@@ -87,13 +88,14 @@ const sizeClass: Record<LogoSize, string> = {
   big: "w-[88%] h-[64%] md:w-[86%] md:h-[66%]",
 };
 
-// ✅ oq logo oq fonda yo‘qolib ketmasin (kontur/shadow)
 const whiteLogoStyle: React.CSSProperties = {
   filter:
     "drop-shadow(0 1px 0 rgba(0,0,0,0.55)) drop-shadow(0 -1px 0 rgba(0,0,0,0.55)) drop-shadow(1px 0 0 rgba(0,0,0,0.55)) drop-shadow(-1px 0 0 rgba(0,0,0,0.55))",
 };
 
 export default function ClientsPage() {
+  const { dict } = useI18n();
+
   return (
     <main className="relative min-h-screen">
       <Navbar />
@@ -102,12 +104,10 @@ export default function ClientsPage() {
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mb-24">
             <h1 className="text-6xl md:text-9xl font-bold uppercase tracking-tighter mb-8 leading-[0.8]">
-              Клиенты
+              {dict.clients.title}
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              AUA Creative Agency — продакшн-партнёр ведущих брендов и компаний
-              региона. Мы создаем визуальный контент, который усиливает позиции
-              на рынке.
+              {dict.clients.desc}
             </p>
           </div>
 
@@ -135,7 +135,6 @@ export default function ClientsPage() {
                   "
                   title={client.name}
                 >
-                  {/* ✅ ichkarida yengil "panel" effekt */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent" />
 
                   <div
@@ -179,15 +178,8 @@ export default function ClientsPage() {
 
           <div className="mt-32 p-16 rounded-[3rem] bg-primary text-primary-foreground text-center">
             <h2 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter mb-8">
-              Станьте частью нашей истории
+              {dict.clients.ctaTitle}
             </h2>
-            <p className="text-primary-foreground/80 max-w-xl mx-auto mb-10 text-lg">
-              Мы всегда открыты для новых вызовов и масштабных проектов. Давайте
-              создадим что-то легендарное вместе.
-            </p>
-            <button className="bg-primary-foreground text-primary px-12 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform">
-              Начать проект
-            </button>
           </div>
         </div>
       </section>

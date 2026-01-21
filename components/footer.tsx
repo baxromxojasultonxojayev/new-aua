@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n-context";
 
 export function Footer() {
+  const { dict } = useI18n();
+
   return (
     <footer className="pt-32 pb-12 border-t border-border/50">
       <div className="max-w-7xl mx-auto px-6">
@@ -10,26 +15,25 @@ export function Footer() {
               href="/"
               className="text-3xl font-bold tracking-tighter uppercase italic mb-8 block"
             >
-              Synima<span className="text-primary/50">.</span>
+              AUA Creative Agency
             </Link>
             <p className="text-xl text-muted-foreground max-w-sm font-serif">
-              Helping brands tell their stories through cinematic video
-              experiences.
+              {dict.footer.desc}
             </p>
           </div>
 
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest mb-6">
-              Studios
+              {dict.footer.studiosTitle}
             </h4>
             <ul className="space-y-4 text-muted-foreground text-sm">
-              <li>Chimkents Street, 8, Tashkent City, Uzbekistan</li>
+              <li>{dict.footer.address}</li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest mb-6">
-              Connect
+              {dict.footer.connectTitle}
             </h4>
             <ul className="space-y-4 text-muted-foreground text-sm">
               <li>
@@ -43,9 +47,8 @@ export function Footer() {
                 </Link>
               </li>
 
-              {/* ✅ Phone chap tomondagidek: label alohida, raqamlar pastga tushib ketadi */}
               <li className="flex items-start gap-2">
-                <span className="shrink-0">Phone</span>
+                <span className="shrink-0">{dict.footer.phoneLabel}</span>
                 <div className="flex flex-col leading-relaxed">
                   <Link
                     href="tel:+998900690600"
@@ -73,14 +76,15 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-border/20 gap-6">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            © 2026 Synima Creative Agency. All rights reserved.
+            {dict.footer.rights}
           </p>
+
           <div className="flex gap-8 text-[10px] uppercase tracking-widest text-muted-foreground">
             <Link href="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
+              {dict.footer.privacy}
             </Link>
             <Link href="#" className="hover:text-foreground transition-colors">
-              Terms of Service
+              {dict.footer.terms}
             </Link>
           </div>
         </div>

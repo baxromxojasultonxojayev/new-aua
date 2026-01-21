@@ -1,9 +1,8 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-/* -------------------- types -------------------- */
 export type Language = "ru" | "en" | "uz";
 
 export interface Dictionary {
@@ -38,8 +37,6 @@ export interface Dictionary {
       cgi: string;
       photo: string;
       reels: string;
-
-      // ✅ added for your folders/tabs
       corporate: string;
       musicClip: string;
       d3: string;
@@ -77,9 +74,23 @@ export interface Dictionary {
     presentation: { title: string; desc: string; features: string[] };
     reels: { title: string; desc: string; features: string[]; button: string };
   };
+  clients: {
+    title: string;
+    desc: string;
+    ctaTitle: string;
+  };
+  footer: {
+    desc: string;
+    studiosTitle: string;
+    connectTitle: string;
+    address: string;
+    phoneLabel: string;
+    rights: string;
+    privacy: string;
+    terms: string;
+  };
 }
 
-/* -------------------- dictionaries -------------------- */
 const dictionaries: Record<Language, Dictionary> = {
   ru: {
     hero: {
@@ -115,8 +126,6 @@ const dictionaries: Record<Language, Dictionary> = {
         cgi: "3D / CGI",
         photo: "Photo",
         reels: "Reels",
-
-        // ✅ your folder tabs
         corporate: "Corporate",
         musicClip: "Music Clip",
         d3: "3D",
@@ -169,8 +178,8 @@ const dictionaries: Record<Language, Dictionary> = {
         ],
       },
       product: {
-        title: "Photo Production",
-        desc: "Рекламная, предметная, fashion и имиджевая фотосъёмка с глубокой ретушью.",
+        title: "Product Production",
+        desc: "Демонстрационные видео и контент для продвижения продукта.",
         features: [
           "Макросъёмка продукции",
           "Студийные постановки",
@@ -220,6 +229,21 @@ const dictionaries: Record<Language, Dictionary> = {
         button: "Подробнее",
       },
     },
+    clients: {
+      title: "Наши клиенты",
+      desc: "AUA Creative Agency — продакшн-партнёр ведущих брендов и компаний региона.",
+      ctaTitle: "Мы превращаем идеи в визуальные истории.",
+    },
+    footer: {
+      desc: "Помогаем брендам рассказывать свои истории через кинематографичный видеопродакшн.",
+      studiosTitle: "Студия",
+      connectTitle: "Связаться",
+      address: "Chimkents Street, 8, Tashkent City, Uzbekistan",
+      phoneLabel: "Телефон",
+      rights: "© 2026 AUA Creative Agency. Все права защищены.",
+      privacy: "Политика конфиденциальности",
+      terms: "Условия использования",
+    },
   },
 
   en: {
@@ -256,8 +280,6 @@ const dictionaries: Record<Language, Dictionary> = {
         cgi: "3D / CGI",
         photo: "Photo",
         reels: "Reels",
-
-        // ✅ your folder tabs
         corporate: "Corporate",
         musicClip: "Music Clip",
         d3: "3D",
@@ -300,23 +322,23 @@ const dictionaries: Record<Language, Dictionary> = {
         "Tell us about your tasks, and we'll propose the best format within 24 hours.",
       ctaButton: "Request Quote",
       commercial: {
-        title: "Commercial Production",
-        desc: "Advertising and image films for brands, banks, and corporations.",
+        title: "Video production",
+        desc: "Commercial, corporate, and product videos for any industry.",
         features: [
           "TV & Online Ads",
           "Corporate Campaigns",
-          "Image Promos",
+          "Brand Promos",
           "Full-cycle Production",
         ],
       },
       product: {
-        title: "Photo Production",
-        desc: "World-class demonstration videos and product shoots.",
+        title: "Product Production",
+        desc: "World-class demonstration videos and product content.",
         features: [
-          "Macro Cinematography",
-          "Studio Setups",
-          "CGI Integration",
-          "Dynamic Editing",
+          "Macro cinematography",
+          "Studio setups",
+          "CGI integration",
+          "Dynamic editing",
         ],
       },
       cgi: {
@@ -335,7 +357,7 @@ const dictionaries: Record<Language, Dictionary> = {
         features: [
           "Product & Subject photo",
           "Fashion / Lifestyle",
-          "Commercial Shoots",
+          "Commercial shoots",
           "Post-production",
         ],
       },
@@ -343,23 +365,38 @@ const dictionaries: Record<Language, Dictionary> = {
         title: "Presentation Videos",
         desc: "Videos for exhibitions, presentations, and major product launches.",
         features: [
-          "Cinematic Visuals",
-          "Attention to Detail",
-          "Brand Storytelling",
-          "High Resolution",
+          "Cinematic visuals",
+          "Attention to detail",
+          "Brand storytelling",
+          "High resolution",
         ],
       },
       reels: {
         title: "Reels Production — Vertica Visuals",
-        desc: "Creating short, dynamic social media content with a focus on virality.",
+        desc: "Short, dynamic content for social media.",
         features: [
           "Reels / Shorts / TikTok",
-          "Mobile Storytelling",
-          "Natural Movement",
-          "Trending Edits",
+          "Mobile storytelling",
+          "Natural movement",
+          "Trending edits",
         ],
         button: "Explore",
       },
+    },
+    clients: {
+      title: "Our Clients",
+      desc: "AUA Creative Agency is the production partner of leading brands and companies in the region.",
+      ctaTitle: "We turn ideas into visual stories.",
+    },
+    footer: {
+      desc: "Helping brands tell their stories through cinematic video experiences.",
+      studiosTitle: "Studios",
+      connectTitle: "Connect",
+      address: "Chimkents Street, 8, Tashkent City, Uzbekistan",
+      phoneLabel: "Phone",
+      rights: "© 2026 AUA Creative Agency. All rights reserved.",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service",
     },
   },
 
@@ -367,7 +404,7 @@ const dictionaries: Record<Language, Dictionary> = {
     hero: {
       title: "AUA Creative Agency — Jahon darajasidagi prodakshn",
       subtitle:
-        "Biz hikoya qiluvchi, ilhomlantiruvchi va natija beruvchi tijoriy va mahsulot videolarini yaratamiz.",
+        "Biz hikoya qiluvchi, ilhomlantiruvchi va natija beruvchi tijoriy hamda mahsulot videolarini yaratamiz.",
       ctaPrimary: "Shourilni ko'rish",
       ctaSecondary: "Ishlarimiz",
       scroll: "Pastga tushing",
@@ -397,8 +434,6 @@ const dictionaries: Record<Language, Dictionary> = {
         cgi: "3D / CGI",
         photo: "Photo",
         reels: "Reels",
-
-        // ✅ your folder tabs
         corporate: "Korporativ",
         musicClip: "Musiqa klip",
         d3: "3D",
@@ -425,56 +460,56 @@ const dictionaries: Record<Language, Dictionary> = {
     },
     photo: {
       title: "Foto",
-      desc: "Estetika va texnik mukammallikka urg'u berilgan reklama va imidj suratga olish xizmati.",
-      cta: "Fotosurat so'rovini yuborish",
+      desc: "Reklama, mahsulot va imidj fotosuratlari — estetika va sifatga urg'u bilan.",
+      cta: "Foto sessiya so'rovi",
     },
     services: {
       title: "Xizmatlarimiz",
-      desc: "Biz g'oyadan yakuniy montajgacha to'liq prodakshn xizmatini taklif etadi.",
+      desc: "Biz g'oyadan yakuniy montajgacha to'liq prodakshn xizmatlarini taklif qilamiz.",
       heroTitle: "G'oyalarni vizual haqiqatga aylantiramiz",
       heroDesc:
         "AUA Creative Agency g'oyadan yakuniy montajgacha bo'lgan to'liq video prodakshn xizmatini taqdim etadi.",
-      heroScroll: "Xizmatlarimizni o'rganing",
+      heroScroll: "Xizmatlarni ko'ring",
       viewAll: "Barcha xizmatlar",
-      ctaTitle: "Loyihangizni muhokama qilishga tayyormisiz?",
+      ctaTitle: "Loyihangizni muhokama qilamizmi?",
       ctaDesc:
-        "Vazifalaringiz haqida aytib bering va biz 24 soat ichida eng yaxshi formatni taklif qilamiz.",
+        "Vazifalaringizni yozing — biz 24 soat ichida eng yaxshi formatni taklif qilamiz.",
       ctaButton: "Smetani so'rash",
       commercial: {
-        title: "Commercial Production",
-        desc: "Brendlar, banklar va korporatsiyalar uchun reklama va imidj roliklari.",
+        title: "Video production",
+        desc: "Har qanday soha uchun reklama, korporativ va mahsulot videolari.",
         features: [
           "TV va onlayn reklama",
           "Korporativ kampaniyalar",
-          "Imidj promolari",
+          "Brend promolari",
           "To'liq sikl prodakshn",
         ],
       },
       product: {
-        title: "Photo Production",
-        desc: "Jahon darajasidagi namoyish videolari va mahsulot suratga olish ishlari.",
+        title: "Product Production",
+        desc: "Mahsulotni targ'ib qilish uchun video va kontent.",
         features: [
-          "Makro-tasvirga olish",
+          "Makro suratga olish",
           "Studiya postanovkalari",
-          "CGI elementlar integratsiyasi",
-          "Montaj",
+          "CGI integratsiya",
+          "Dinamik montaj",
         ],
       },
       cgi: {
         title: "3D / CGI Production",
-        desc: "Mahsulot vizualizatsiyasi, moušn-grafika va murakkab simulyatsiyalar.",
+        desc: "Mahsulot vizualizatsiyasi, motion-grafika va murakkab simulyatsiyalar.",
         features: [
           "Mahsulot renderi",
           "Personaj animatsiyasi",
-          "Vizual effektlar (VFX)",
+          "VFX",
           "Motion Graphics",
         ],
       },
       photo: {
         title: "Photo Production",
-        desc: "Reklama, mahsulot va imidj fotosuratlari hamda chuqur retush xizmati.",
+        desc: "Reklama, mahsulot, fashion va imidj suratga olish (chuqur retush bilan).",
         features: [
-          "Product & Subject photo",
+          "Mahsulot & predmet foto",
           "Fashion / Lifestyle",
           "Tijoriy suratga olish",
           "Post-prodakshn",
@@ -482,30 +517,44 @@ const dictionaries: Record<Language, Dictionary> = {
       },
       presentation: {
         title: "Presentation Videos",
-        desc: "Ko'rgazmalar, taqdimotlar va yangi mahsulotlarni ishga tushirish uchun videolar.",
+        desc: "Ko'rgazma, taqdimot va yangi mahsulotlar launch uchun videolar.",
         features: [
           "Kinematografik vizual",
           "Detallarga e'tibor",
           "Brend hikoyasi",
-          "Yuqori ruxsat (8K/4K)",
+          "Yuqori sifat",
         ],
       },
       reels: {
         title: "Reels Production — Vertica Visuals",
-        desc: "Ijtimoiy tarmoqlar uchun dinamik va virusli kontent yaratish.",
+        desc: "Ijtimoiy tarmoqlar uchun qisqa va dinamik kontent.",
         features: [
           "Reels / Shorts / TikTok",
-          "Mobil hikoya qilish",
+          "Mobil story",
           "Tabiiy harakat",
           "Trend montaj",
         ],
         button: "Batafsil",
       },
     },
+    clients: {
+      title: "Mijozlarimiz",
+      desc: "AUA Creative Agency — mintaqadagi yetakchi brend va kompaniyalar uchun prodakshn-hamkor.",
+      ctaTitle: "Biz g'oyalarni vizual hikoyalarga aylantiramiz.",
+    },
+    footer: {
+      desc: "Brendlarga hikoyalarini kinomatografik video orqali yetkazishga yordam beramiz.",
+      studiosTitle: "Studiya",
+      connectTitle: "Aloqa",
+      address: "Chimkents ko‘chasi, 8, Tashkent City, O‘zbekiston",
+      phoneLabel: "Telefon",
+      rights: "© 2026 AUA Creative Agency. Barcha huquqlar himoyalangan.",
+      privacy: "Maxfiylik siyosati",
+      terms: "Foydalanish shartlari",
+    },
   },
 };
 
-/* -------------------- context -------------------- */
 interface I18nContextProps {
   lang: Language;
   setLang: (lang: Language) => void;
@@ -515,7 +564,23 @@ interface I18nContextProps {
 const I18nContext = createContext<I18nContextProps | undefined>(undefined);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Language>("ru");
+  const [lang, setLangState] = useState<Language>("ru");
+
+  useEffect(() => {
+    try {
+      const saved = (localStorage.getItem("lang") || "").trim() as Language;
+      if (saved === "ru" || saved === "en" || saved === "uz") {
+        setLangState(saved);
+      }
+    } catch {}
+  }, []);
+
+  const setLang = (l: Language) => {
+    setLangState(l);
+    try {
+      localStorage.setItem("lang", l);
+    } catch {}
+  };
 
   return (
     <I18nContext.Provider value={{ lang, setLang, dict: dictionaries[lang] }}>

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type TabKey =
   | "3D"
@@ -22,16 +23,12 @@ type WorkItem = {
   youtube?: string;
 };
 
-// ---------- helpers ----------
-
-// ✅ Unicode-safe normalize (Cyrillic ham qoladi: кашель ishlaydi)
 const normalizeId = (s: string) =>
   s
     .toLowerCase()
     .trim()
     .replace(/\.(png|jpg|jpeg|webp|gif)$/iu, "")
     .replace(/\s+/g, "-")
-    // faqat harf/son va "-" qoldiramiz (unicode)
     .replace(/[^\p{L}\p{N}-]/gu, "");
 
 const folderToTab = (folder: string): TabKey => {
@@ -39,29 +36,24 @@ const folderToTab = (folder: string): TabKey => {
   return folder as TabKey;
 };
 
-// ✅ bitta standart title list (hamma joyda SHU chiqadi)
 const TITLE: Record<string, string> = {
-  // Music Clip
-  "asaka-bank-2": "Asaka Bank 2",
-  "asaka-bank": "Asaka Bank",
   "asalya-unlucky": "Asalya - “Unlucky”",
   "asiat-кашель": "Asiat - “Кашель”",
   "samar-hiyla": "Samar - “Hiyla”",
   "konsta-x-munisa-rizayeva-2": "Munisa Rizayeva X Konsta - “Oylamading”",
-  "uyxoqi-baho-khabi": "Baho Khabi - “Чужой”",
+  "baho-khabi": "Baho Khabi - “Чужой”",
   "raayxonaa-chempion": "Raayxonaa - “Chempion”",
-
-  // Corporate / Commercial / Product
   brb: "Biznesni Rivojlantirish Banki (BRB)",
   "centril-ladies": "Centris",
   dahua: "Dahua Technology",
   deepal: "Deepal",
-  // deepal: "Deepal",
+  deepal1: "Deepal",
   aije: "AIJE",
   lixiang: "Lixiang",
-  "lixian-thumbnail-2": "Lixiang", // file: "lixian thumbnail 2.png"
+  "lixian-thumbnail-2": "Lixiang",
   porsche: "Porsche X Technogym",
   "mening-biznesim": "Mening biznesim",
+  "milaf-cola": "Milaf cola",
   milaf: "Milaf cola",
   toyota: "Toyota",
   "mercury-travel": "Mercury Travel",
@@ -71,14 +63,13 @@ const TITLE: Record<string, string> = {
   "yandex-go": "Yandex Go",
   "yandex-market": "Yandex Market",
   "shinam-podcast": "Shinam Podcast",
-
-  // Photos
   "central-asian-drift-show": "Central Asian Drift Show",
   rino: "Rino Jeans",
   "space-fusion": "Space Fusion",
+  "asaka-bank-2": "Asaka Bank 2",
+  "asaka-bank": "Asaka Bank",
 };
 
-// YouTube link mapping
 const YT: Record<string, string> = {
   "asaka-bank-2": "https://youtu.be/r5M8un1iGIE",
   "asaka-bank": "https://youtu.be/EVZk3Eda740?si=1N2qvHd4ZS_3JKt-",
@@ -89,19 +80,16 @@ const YT: Record<string, string> = {
   "milaf-cola": "https://youtu.be/LZt4LlgyQRY?si=UvWx_2BT7ENTIpba",
   toyota: "https://youtu.be/-sbXXczGJcM?si=ERxMvg6Kn0YKbLCh",
   uzclaas: "https://youtu.be/afY3OwkikOk?si=6vufBrpXWYtOAJ3I",
-
   "mening-biznesim": "https://youtu.be/UPax2OGL4HM?si=v0yB7dfzSeacOdKV",
   "yandex-go": "https://youtu.be/53X5WiHZTpk?si=Y-ZCUKYFYULyYBtE",
   "yoursevice-thumbnail": "https://youtu.be/1Fw9SLvoARs?si=ycr7K-yvIW2SDTh_",
   "your-service": "https://youtu.be/1Fw9SLvoARs?si=ycr7K-yvIW2SDTh_",
-
   "centril-ladies": "https://youtu.be/fdz_JMZzfX8?si=NogZBpfI-lIPdmyj",
   dahua: "https://youtu.be/urHaY3nv3eo?si=bYQWcFbiyxtKUapb",
   aije: "https://youtu.be/CvQS2ohabfA?si=j1AkjWAuSPrvQxxH",
   "yandex-market": "https://youtu.be/VbSeGvoHwqM?si=eLw6tvXGAtg2pLB1",
   "shinam-podcast": "https://www.youtube.com/watch?v=PnQTTxf7QFs",
   porsche: "https://youtu.be/Wdy4rjjOFak?si=WbYj4gFeJZo8B7Sl",
-
   "asalya-unlucky": "https://youtu.be/kAqZpG71mZg?si=hrMymaOpW4KvWMZW",
   "asiat-кашель": "https://youtu.be/r-TORAhYud8",
   "samar-hiyla": "https://youtu.be/Lto6c_vB9l0?si=HizssybXoMZpYRZV",
@@ -111,29 +99,22 @@ const YT: Record<string, string> = {
     "https://youtu.be/c7DwV2HMmNw?si=S7SxirjUKiKS71uD",
 };
 
-// ✅ YouTube ID ni topib beradi (watch, youtu.be, shorts, embed)
 const getYoutubeId = (raw?: string) => {
   if (!raw) return "";
   try {
     const u = new URL(raw);
 
-    // youtu.be/<id>
     if (u.hostname.includes("youtu.be")) {
-      // pathname: /<id>
-      const id = u.pathname.split("/").filter(Boolean)[0] || "";
-      return id;
+      return u.pathname.split("/").filter(Boolean)[0] || "";
     }
 
-    // youtube.com/watch?v=<id>
     const v = u.searchParams.get("v");
     if (v) return v;
 
-    // youtube.com/shorts/<id>
     if (u.pathname.includes("/shorts/")) {
       return u.pathname.split("/shorts/")[1]?.split("/")[0] || "";
     }
 
-    // youtube.com/embed/<id>
     if (u.pathname.includes("/embed/")) {
       return u.pathname.split("/embed/")[1]?.split("/")[0] || "";
     }
@@ -146,13 +127,9 @@ const getYoutubeId = (raw?: string) => {
 
 const makeItems = (folder: string, files: string[]): WorkItem[] => {
   const tab = folderToTab(folder);
-
   return files.map((file) => {
     const key = normalizeId(file);
-
-    // ✅ faqat shu ro‘yxatdagi nomlar chiqadi, topilmasa baribir file nomini emas, "—" chiqadi
     const title = TITLE[key] || "—";
-
     const id = `${folder}-${file}`.toLowerCase().replace(/\s+/g, "-");
     const youtube = YT[key];
 
@@ -167,16 +144,13 @@ const makeItems = (folder: string, files: string[]): WorkItem[] => {
   });
 };
 
-// ---------- DATA ----------
 const worksData: WorkItem[] = [
   ...makeItems("3D", ["porsche.png"]),
-
   ...makeItems("Commercial", [
     "mening biznesim.png",
     "yandex go.png",
     "yoursevice thumbnail.png",
   ]),
-
   ...makeItems("Corporate", [
     "Asaka Bank 2.png",
     "asaka bank.png",
@@ -189,16 +163,14 @@ const worksData: WorkItem[] = [
     "toyota.jpg",
     "uzclaas.png",
   ]),
-
   ...makeItems("Music Clip", [
     "asalya unlucky.jpg",
     "Asiat Кашель.png",
     "Konsta X Munisa Rizayeva (2).png",
     "raayxonaa chempion.jpg",
     "samar hiyla.jpg",
-    "uyxoqi Baho Khabi.jpg",
+    "Baho Khabi.jpg",
   ]),
-
   ...makeItems("photos", [
     "central asian drift show.jpg",
     "deepal.jpg",
@@ -208,7 +180,6 @@ const worksData: WorkItem[] = [
     "toyota.jpg",
     "Your Service.jpg",
   ]),
-
   ...makeItems("Product", [
     "aije.jpg",
     "centril ladies.png",
@@ -223,7 +194,6 @@ const worksData: WorkItem[] = [
   ]),
 ];
 
-// ---------- MODAL (IFRAME PLAYER) ----------
 const Modal = ({
   open,
   title,
@@ -255,12 +225,9 @@ const Modal = ({
   if (!open) return null;
 
   const id = getYoutubeId(url);
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const embedSrc = id
-    ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&origin=${encodeURIComponent(
-        origin
-      )}`
+    ? `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&controls=1`
     : "";
 
   return (
@@ -297,7 +264,7 @@ const Modal = ({
                 className="absolute inset-0 w-full h-full"
                 src={embedSrc}
                 title={title || "YouTube video"}
-                allow="autoplay; encrypted-media; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
               />
@@ -313,9 +280,10 @@ const Modal = ({
   );
 };
 
-// ---------- COMPONENT ----------
 export const WorksGallery = () => {
   const { dict } = useI18n();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const tabs: TabKey[] = useMemo(
     () => ["Commercial", "Product", "3D", "Corporate", "Music Clip", "Photo"],
@@ -324,7 +292,6 @@ export const WorksGallery = () => {
 
   const tabLabel = (tab: TabKey) => {
     const c: any = dict.works.categories;
-
     if (tab === "Commercial") return c.commercial || "Commercial";
     if (tab === "Product") return c.product || "Product";
     if (tab === "Photo") return c.photo || "Photo";
@@ -334,7 +301,22 @@ export const WorksGallery = () => {
     return tab;
   };
 
+  const readTabFromUrl = useCallback((): TabKey => {
+    const t = (searchParams.get("tab") || "").trim();
+    if (tabs.includes(t as TabKey)) return t as TabKey;
+    return "Commercial";
+  }, [searchParams, tabs]);
+
   const [activeTab, setActiveTab] = useState<TabKey>("Commercial");
+
+  useEffect(() => {
+    setActiveTab(readTabFromUrl());
+  }, [readTabFromUrl]);
+
+  const setTab = (tab: TabKey) => {
+    setActiveTab(tab);
+    router.replace(`/works?tab=${encodeURIComponent(tab)}`);
+  };
 
   const filtered = useMemo(() => {
     return worksData.filter((x) => x.tab === activeTab);
@@ -344,7 +326,6 @@ export const WorksGallery = () => {
   const [activeWork, setActiveWork] = useState<WorkItem | null>(null);
 
   const openModal = (work: WorkItem) => {
-    // ✅ youtube bo‘lmasa modal ochmaymiz (bosilganda “bo‘sh” chiqib qolmasin)
     if (!work.youtube) return;
     setActiveWork(work);
     setOpen(true);
@@ -363,7 +344,7 @@ export const WorksGallery = () => {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setTab(tab)}
                 className={`text-sm font-bold uppercase tracking-widest px-6 py-2 rounded-full border transition-all ${
                   activeTab === tab
                     ? "bg-primary text-primary-foreground border-primary"
@@ -379,7 +360,6 @@ export const WorksGallery = () => {
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <AnimatePresence mode="popLayout">
               {filtered.map((work) => {
-                // ✅ spaces/cyrillic bo‘lsa ham img ishlashi uchun encodeURI
                 const imgSrc = work.image
                   ? encodeURI(work.image)
                   : "/placeholder.svg";
@@ -406,16 +386,13 @@ export const WorksGallery = () => {
                       className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
                       loading="lazy"
                       onError={(e) => {
-                        // ✅ rasm topilmasa fallback
                         (e.currentTarget as HTMLImageElement).src =
                           "/placeholder.svg";
                       }}
                     />
 
-                    {/* ✅ gradient doim ko‘rinsin (hover bo‘lmasa ham title chiqadi) */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-100 transition-opacity duration-500" />
 
-                    {/* ✅ title doim ko‘rinsin (hoverda kuchayadi) */}
                     <div className="absolute inset-0 p-8 flex flex-col justify-end transition-all duration-500">
                       <span className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
                         {tabLabel(work.tab)}
